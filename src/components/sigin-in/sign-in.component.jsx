@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState,useContext } from "react";
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
+import { UserContext } from "../../contexts/users.context";
 import {
   auth,
   signInUserWithEmailAndPassword,
@@ -18,6 +19,8 @@ const SignIn = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { email, password } = formFields;
 
+  const {setCurrentUser} = useContext(UserContext);
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormFields({ ...formFields, [name]: value });
@@ -27,12 +30,12 @@ const SignIn = () => {
     event.preventDefault();
     console.log(event);
     try {
-      const response = await signInUserWithEmailAndPassword(
+      const {user} = await signInUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-      console.log(response);
+      setCurrentUser(user);
     } catch (error) {
       if (error.code === "auth/invalid-credential") {
         alert("Invalid credential, wrong username / password ");
