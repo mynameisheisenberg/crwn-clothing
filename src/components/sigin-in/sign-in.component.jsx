@@ -1,6 +1,6 @@
 import { useState } from "react";
 import FormInput from "../form-input/form-input.component";
-import Button, { BUTTON_TYPE_CLASSES } from "../button/button.component";
+import Button from "../button/button.component";
 import {
   auth,
   signInUserWithEmailAndPassword,
@@ -27,17 +27,18 @@ const SignIn = () => {
     event.preventDefault();
     console.log(event);
     try {
-      const { user } = await signInUserWithEmailAndPassword(
+      const response = await signInUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-      console.log(user.user);
+      console.log(response);
     } catch (error) {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log("Received error message while logging in:", errorMessage);
-      console.log("Received error code while logging in:", errorCode);
+      if (error.code === "auth/invalid-credential") {
+        alert("Invalid credential, wrong username / password ");
+      } else {
+        console.log(error);
+      }
     }
   };
 
@@ -51,7 +52,7 @@ const SignIn = () => {
     <div className="sign-in-container">
       <h2>I already have an account</h2>
       <span>Sign in with your email and password</span>
-      <form>
+      <form onSubmit={handleSubmit}>
         <FormInput
           label="Email"
           type="email"
@@ -72,12 +73,10 @@ const SignIn = () => {
         <div className="buttons-container">
           <Button type="submit">Sign In</Button>
           <Button buttonType="google" type="click" onClick={signInWithGoogle}>
-        Sign In With Google
-      </Button>
-      {/* <button type="button" onClick={signInWithGoogle} >Sign In With Google</button> */}
+            Sign In With Google
+          </Button>
         </div>
       </form>
-
     </div>
   );
 };
