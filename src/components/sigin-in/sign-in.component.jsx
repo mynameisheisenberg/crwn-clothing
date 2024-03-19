@@ -1,7 +1,7 @@
 import { useState,useContext } from "react";
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
-import { UserContext } from "../../contexts/users.context";
+
 import {
   auth,
   signInUserWithEmailAndPassword,
@@ -19,8 +19,6 @@ const SignIn = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { email, password } = formFields;
 
-  const {setCurrentUser} = useContext(UserContext);
-
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormFields({ ...formFields, [name]: value });
@@ -28,14 +26,12 @@ const SignIn = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(event);
     try {
       const {user} = await signInUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-      setCurrentUser(user);
     } catch (error) {
       if (error.code === "auth/invalid-credential") {
         alert("Invalid credential, wrong username / password ");
@@ -47,8 +43,7 @@ const SignIn = () => {
 
   const signInWithGoogle = async () => {
     console.log("Inside sign with google");
-    const { user } = await signInWithGooglePopup();
-    await createUserDocumentFromAuth(user);
+    await signInWithGooglePopup();
   };
 
   return (
