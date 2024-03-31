@@ -13,8 +13,7 @@ export const UserContext = createContext({
 export const UserProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const value = { currentUser, setCurrentUser };
-  useEffect(() => {
-    console.log("inside use effect in users.context");
+  useEffect(() => { 
     const unsubscribe = onAuthStateChangedListner(async (user) => {
       if (user) {
         await createUserDocumentFromAuth(user);
